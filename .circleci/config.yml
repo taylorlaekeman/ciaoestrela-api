@@ -23,7 +23,11 @@ jobs:
       - checkout
       - attach_workspace:
           at: /home/circleci/project
-      - run: make lint
+      - run:
+          name: venv and lint
+          command: |
+            . venv/bin/activate
+            make lint
 
   test:
     docker:
@@ -32,7 +36,11 @@ jobs:
       - checkout
       - attach_workspace:
           at: /home/circleci/project
-      - run: make test
+      - run:
+          name: venv and test
+          command: |
+            . venv/bin/activate
+            make test
 
 workflows:
   version: 2
