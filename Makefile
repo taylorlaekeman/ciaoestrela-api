@@ -10,7 +10,7 @@ run:
 	python manage.py runserver 0.0.0.0:8080
 
 test:
-	python -m pytest
+	python -m pytest tests/
 
 lint:
 	python -m pylint ciaoestrela_api
