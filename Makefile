@@ -1,5 +1,5 @@
 install:
-	pip install --upgrade pip==19.1.1 && \
+	pip install --upgrade pip==19.1.1
 	pip install -r requirements.txt
 
 build:
