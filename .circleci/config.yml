@@ -5,9 +5,12 @@ jobs:
       - image: circleci/python:3.8
     steps:
       - checkout
-      - run: python3.8 -m venv venv
-      - run: source venv/bin/activate
-      - run: make install
+      - run:
+          name: venv and install
+          command: |
+            python3.8 -m venv venv
+            . venv/bin/activate
+            make install
       - persist_to_workspace:
           root: /home/circleci/project/
           paths:
