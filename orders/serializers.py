@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Order, OrderType
+from .models import Order, OrderType, PaperType
 from .utils.create_order_item import create_order_item
 
 
@@ -28,4 +28,10 @@ class OrderSerializer(serializers.Serializer):
 class OrderTypeSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = OrderType
+        fields = ['name']
+
+
+class PaperTypeSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = PaperType
         fields = ['name']
