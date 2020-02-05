@@ -15,7 +15,11 @@ class OrderItem(models.Model):
     order_type = models.ForeignKey(OrderType, on_delete=models.PROTECT)
 
 
+class PaperType(models.Model):
+    name = models.CharField(max_length=100)
+
+
 class CustomCard(models.Model):
     order_item = models.OneToOneField(OrderItem, on_delete=models.CASCADE)
     ideas = models.TextField()
-    paper = models.TextField(null=True)
+    paper = models.ForeignKey(PaperType, on_delete=models.PROTECT, default=1)

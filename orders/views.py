@@ -5,8 +5,8 @@ from django.template import loader
 from rest_framework import viewsets
 from rest_framework.response import Response
 
-from .models import Order, OrderType
-from .serializers import OrderSerializer, OrderTypeSerializer
+from .models import Order, OrderType, PaperType
+from .serializers import OrderSerializer, OrderTypeSerializer, PaperTypeSerializer
 
 
 class OrderViewset(viewsets.ViewSet):
@@ -45,3 +45,8 @@ def build_email_html(body):
 class OrderTypeViewset(viewsets.ModelViewSet):
     queryset = OrderType.objects.all()
     serializer_class = OrderTypeSerializer
+
+
+class PaperTypeViewset(viewsets.ModelViewSet):
+    queryset = PaperType.objects.all()
+    serializer_class = PaperTypeSerializer
