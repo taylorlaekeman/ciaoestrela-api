@@ -18,3 +18,4 @@ class OrderItem(models.Model):
 class CustomCard(models.Model):
     order_item = models.OneToOneField(OrderItem, on_delete=models.CASCADE)
     ideas = models.TextField()
+    paper = models.TextField(null=True)
