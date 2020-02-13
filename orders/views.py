@@ -4,6 +4,7 @@ from django.shortcuts import render
 from django.template import loader
 from rest_framework import viewsets
 from rest_framework.response import Response
+import stripe
 
 from .models import Order, OrderType, PaperType
 from .serializers import OrderSerializer, OrderTypeSerializer, PaperTypeSerializer
@@ -15,7 +16,9 @@ class OrderViewset(viewsets.ViewSet):
         if not serializer.is_valid():
             return Response(serializer.errors)
         serializer.save()
-        send_confirmation_email(serializer.initial_data)
+        stripe.api_key = settings.STRIPE_SECRET_KEY
+        intent = stripe.PaymentIntent.create(amount=100, currency='cad')
+        serializer.initial_data['payment'] = intent.client_secret
         return Response(serializer.initial_data)
 
 
