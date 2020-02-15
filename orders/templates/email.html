@@ -34,6 +34,24 @@
                 <p style="font-family: Helvetica, Arial, sans-serif; font-size: 1.1em; color: hsl(160, 5%, 30%);">I'm Alicia, the owner, operator, and artist at Ciao, Estrela Co.  Thank you so much for your order!</p>
               </td>
             </tr>
+            <tr>
+              <td>
+                <table style="width: 100%; margin-bottom: 10px; padding: 10px 12px; background-color: hsl(160, 30%, 95%);">
+                  <tbody>
+                    <tr>
+                      <td style="font-family: Helvetica, Arial, sans-serif; font-size: 1.1em; color: hsl(160, 5%, 30%);">
+                        Shipping address:
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="font-family: Helvetica, Arial, sans-serif; font-size: 1.1em; color: hsl(160, 5%, 30%);">
+                        {{ destination }}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
             {% for item in items %}
             <tr>
               <td>
