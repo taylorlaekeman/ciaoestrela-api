@@ -1,13 +1,10 @@
-from django.conf import settings
 from rest_framework import viewsets
 from rest_framework.response import Response
-import stripe
 
 from .models import OrderType, PaperType, Payment
 from .serializers import OrderSerializer, OrderTypeSerializer, PaperTypeSerializer, PaymentSerializer
 from .utils.email import send_confirmation_email
 from .utils.stripe import build_payment_intent
-from .utils.order_info import get_order_info
 
 
 class OrderViewset(viewsets.ViewSet):

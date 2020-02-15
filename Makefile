@@ -11,4 +11,4 @@ test:
 	python -m pytest tests/
 
 lint:
-	python -m pylint ciaoestrela_api
+	python -m pylint orders
