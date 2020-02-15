@@ -1,13 +1,11 @@
 from django.conf import settings
-from django.core.mail import get_connection, EmailMultiAlternatives
-from django.shortcuts import render
-from django.template import loader
 from rest_framework import viewsets
 from rest_framework.response import Response
 import stripe
 
-from .models import Order, OrderType, PaperType
-from .serializers import OrderSerializer, OrderTypeSerializer, PaperTypeSerializer
+from .models import OrderType, PaperType, Payment
+from .serializers import OrderSerializer, OrderTypeSerializer, PaperTypeSerializer, PaymentSerializer
+from .utils.email import send_confirmation_email
 
 
 class OrderViewset(viewsets.ViewSet):
@@ -22,29 +20,6 @@ class OrderViewset(viewsets.ViewSet):
         return Response(serializer.initial_data)
 
 
-def send_confirmation_email(body):
-    message = 'Hi!\n\nI\'m Alicia, the owner, operator, and artist at Ciao, Estrela Co.  Thank you so much for your order!\n\nI\'ll get to work right away, and send you my rough work (for your approval) within two business days.  If you need to get in contact with me, please feel free to respond to this email!\n\nTalk to you soon!\n\nxx Alicia\nCiao, Estrela co.'
-    html_message = build_email_html(body)
-    with get_connection() as connection:
-        email = EmailMultiAlternatives(
-            'I received your order!',
-            message,
-            settings.EMAIL_USER,
-            [body['contact']],
-            [settings.EMAIL_USER],
-            connection=connection,
-        )
-        email.attach_alternative(html_message, 'text/html')
-        email.send()
-
-
-def build_email_html(body):
-    return loader.render_to_string(
-        'orders/templates/email.html',
-        context={'items': body['items']},
-    )
-
-
 class OrderTypeViewset(viewsets.ModelViewSet):
     queryset = OrderType.objects.all()
     serializer_class = OrderTypeSerializer
@@ -53,3 +28,15 @@ class OrderTypeViewset(viewsets.ModelViewSet):
 class PaperTypeViewset(viewsets.ModelViewSet):
     queryset = PaperType.objects.all()
     serializer_class = PaperTypeSerializer
+
+
+class PaymentViewset(viewsets.ModelViewSet):
+    queryset = Payment.objects.all()
+    serializer_class = PaymentSerializer
+    http_method_names = ['post']
+
+    def create(self, request):
+        response = super().create(request)
+        order_id = request.data['order']
+        send_confirmation_email(order_id)
+        return response
