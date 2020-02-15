@@ -23,3 +23,7 @@ class CustomCard(models.Model):
     order_item = models.OneToOneField(OrderItem, on_delete=models.CASCADE)
     ideas = models.TextField()
     paper = models.ForeignKey(PaperType, on_delete=models.PROTECT, default=1)
+
+
+class Payment(models.Model):
+    order = models.OneToOneField(Order, on_delete=models.CASCADE, primary_key=True)

@@ -21,6 +21,15 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY')
+EMAIL_HOST=os.environ.get('EMAIL_HOST')
+EMAIL_HOST_PASSWORD=os.environ.get('EMAIL_HOST_PASSWORD')
+EMAIL_HOST_USER=os.environ.get('EMAIL_HOST_USER')
+EMAIL_PORT=os.environ.get('EMAIL_PORT')
+EMAIL_USER=os.environ.get('EMAIL_USER', EMAIL_HOST_USER)
+STRIPE_SECRET_KEY=os.environ.get('STRIPE_SECRET_KEY')
+
+EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS=True
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -134,11 +143,3 @@ REST_FRAMEWORK = {
         'djangorestframework_camel_case.parser.CamelCaseJSONParser',
     ),
 }
-
-EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST=os.environ.get('EMAIL_HOST')
-EMAIL_PORT=os.environ.get('EMAIL_PORT')
-EMAIL_USE_TLS=True
-EMAIL_HOST_USER=os.environ.get('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD=os.environ.get('EMAIL_HOST_PASSWORD')
-EMAIL_USER=os.environ.get('EMAIL_USER', EMAIL_HOST_USER)
