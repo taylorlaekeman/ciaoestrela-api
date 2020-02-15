@@ -29,6 +29,7 @@ def get_order_info(order_id):
     custom_cards = CustomCard.objects.filter(order_item__order__id=order_id)
     return {
         'contact': order.contact,
+        'destination': order.destination,
         'items': [{ 'ideas': card.ideas, 'paper': card.paper.name } for card in custom_cards]
     }
 
@@ -36,5 +37,5 @@ def get_order_info(order_id):
 def build_email_html(order_info):
     return loader.render_to_string(
         'orders/templates/email.html',
-        context={'items': order_info['items']},
+        context={'destination': order_info['destination'], 'items': order_info['items']},
     )
