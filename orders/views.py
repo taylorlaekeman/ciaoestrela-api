@@ -6,6 +6,8 @@ import stripe
 from .models import OrderType, PaperType, Payment
 from .serializers import OrderSerializer, OrderTypeSerializer, PaperTypeSerializer, PaymentSerializer
 from .utils.email import send_confirmation_email
+from .utils.stripe import build_payment_intent
+from .utils.order_info import get_order_info
 
 
 class OrderViewset(viewsets.ViewSet):
@@ -13,9 +15,8 @@ class OrderViewset(viewsets.ViewSet):
         serializer = OrderSerializer(data=request.data)
         if not serializer.is_valid():
             return Response(serializer.errors)
-        serializer.save()
-        stripe.api_key = settings.STRIPE_SECRET_KEY
-        intent = stripe.PaymentIntent.create(amount=100, currency='cad')
+        order = serializer.save()
+        intent = build_payment_intent(order.id)
         serializer.initial_data['payment'] = intent.client_secret
         return Response(serializer.initial_data)
 

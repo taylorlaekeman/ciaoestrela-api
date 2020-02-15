@@ -28,7 +28,7 @@ class OrderSerializer(serializers.Serializer):
 class OrderTypeSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = OrderType
-        fields = ['name']
+        fields = ['name', 'cost']
 
 
 class PaperTypeSerializer(serializers.HyperlinkedModelSerializer):
