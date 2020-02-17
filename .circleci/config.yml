@@ -48,6 +48,7 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
+      - run: echo test
       - run: echo $DOCKERHUB_PASSWORD
       - run:
           name: build and tag
