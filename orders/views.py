@@ -1,4 +1,4 @@
-from rest_framework import viewsets
+from rest_framework import status, viewsets
 from rest_framework.response import Response
 
 from .models import OrderType, PaperType, Payment
@@ -11,7 +11,7 @@ class OrderViewset(viewsets.ViewSet):
     def create(self, request):
         serializer = OrderSerializer(data=request.data)
         if not serializer.is_valid():
-            return Response(serializer.errors)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         order = serializer.save()
         intent = build_payment_intent(order.id)
         serializer.initial_data['payment'] = intent.client_secret
