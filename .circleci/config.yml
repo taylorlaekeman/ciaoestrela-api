@@ -71,7 +71,7 @@ jobs:
           command: docker load -i /tmp/workspace/image.tar
       - run:
           name: login to docker hub
-          command: docker login tjlaekem $DOCKERHUB_PASSWORD
+          command: echo $DOCKERHUB_PASSWORD | docker login -u tjlaekem --password-stdin
       - run:
           name: publish image
           command: docker push tjlaekem/ciaoestrela-api:dev-latest
