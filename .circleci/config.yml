@@ -1,8 +1,17 @@
 version: 3
-jobs:
-  install:
+
+executors:
+  code-evaluator:
     docker:
       - image: circleci/python:3.8
+
+  docker-publisher:
+    docker:
+      - image: circleci/buildpack-deps:stretch
+
+jobs:
+  install:
+    executor: code-evaluator
     steps:
       - checkout
       - run:
@@ -17,8 +26,7 @@ jobs:
             - venv 
 
   lint:
-    docker:
-      - image: circleci/python:3.8
+    executor: code-evaluator
     steps:
       - checkout
       - attach_workspace:
@@ -30,8 +38,7 @@ jobs:
             make lint
 
   test:
-    docker:
-      - image: circleci/python:3.8
+    executor: code-evaluator
     steps:
       - checkout
       - attach_workspace:
@@ -42,16 +49,33 @@ jobs:
             . venv/bin/activate
             make test
 
-  build:
-    docker:
-      - image: docker:17.05.0-ce-git
+  build_dev_latest:
+    executor: docker-publisher
     steps:
       - checkout
       - setup_remote_docker
       - run:
-         name: build and tag
-         command: |
-           docker build . -t tjlaekem/ciaoestrela-api:dev-latest
+          name: build and tag
+          command: docker build . -t tjlaekem/ciaoestrela-api:dev-latest
+      - run:
+          name: save image
+          command: docker save -o image.tar tjlaekem/ciaoestrela-api:dev-latest
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ./image.tar
+
+    publish_dev_latest:
+      executor: docker-publisher
+      steps:
+        - attach_workspace:
+            at: /tmp/workspace
+        - run:
+            name: load image
+            command: docker load -i /tmp/workspace/image.tar
+        - run:
+            name: publish image
+            command: docker push tjlaekem/ciaoestrela-api:dev-latest
 
 workflows:
   version: 2
@@ -64,4 +88,9 @@ workflows:
       - test:
           requires:
             - install
-      - build
+      - build_dev_latest
+      - publish_dev_latest:
+          requires:
+            - lint
+            - test
+            - build_dev_latest
