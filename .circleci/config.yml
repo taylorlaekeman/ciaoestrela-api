@@ -42,6 +42,17 @@ jobs:
             . venv/bin/activate
             make test
 
+  build:
+    docker:
+      - image: docker:17.05.0-ce-git
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+         name: build and tag
+         command: |
+           docker build . -t tjlaekem/ciaoestrela-api:dev-latest
+
 workflows:
   version: 2
   test_build_deploy:
@@ -53,3 +64,4 @@ workflows:
       - test:
           requires:
             - install
+      - build
