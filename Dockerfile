@@ -3,6 +3,7 @@ COPY Makefile /app/
 COPY requirements.txt /app/
 COPY manage.py /app/
 COPY ciaoestrela_api /app/ciaoestrela_api
+COPY orders /app/orders
 RUN apk add make postgresql-libs
 RUN apk add --virtual .build-dependencies gcc musl-dev postgresql-dev
 RUN make -C app install

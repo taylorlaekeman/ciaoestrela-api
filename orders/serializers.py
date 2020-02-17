@@ -6,13 +6,13 @@ from .utils.create_order_item import create_order_item
 
 class OrderItemSerializer(serializers.Serializer):
     order_type = serializers.CharField()
-    ideas = serializers.CharField(required=False)
+    ideas = serializers.CharField(required=False, allow_blank=True)
 
 
 class OrderSerializer(serializers.Serializer):
     contact = serializers.EmailField()
     destination = serializers.CharField()
-    items = serializers.ListField(child=OrderItemSerializer())
+    items = serializers.ListField(child=OrderItemSerializer(), allow_empty=False)
 
     def create(self, validated_data):
         order = Order.objects.create(

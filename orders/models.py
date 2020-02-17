@@ -22,7 +22,7 @@ class PaperType(models.Model):
 
 class CustomCard(models.Model):
     order_item = models.OneToOneField(OrderItem, on_delete=models.CASCADE)
-    ideas = models.TextField()
+    ideas = models.TextField(blank=True)
     paper = models.ForeignKey(PaperType, on_delete=models.PROTECT, default=1)
 
 
