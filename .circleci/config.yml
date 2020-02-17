@@ -48,6 +48,7 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
+      - run: echo $DOCKERHUB_PASSWORD
       - run:
           name: build and tag
           command: docker build . -t tjlaekem/ciaoestrela-api:dev-latest
