@@ -87,7 +87,8 @@ workflows:
       - test:
           requires:
             - install
-      - build_dev_latest
+      - build_dev_latest:
+          context: dev
       - publish_dev_latest:
           context: dockerhub
           requires:
