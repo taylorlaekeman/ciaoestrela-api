@@ -1,17 +1,8 @@
 version: 3
-
-executors:
-  code-evaluator:
-    docker:
-      - image: circleci/python:3.8
-
-  docker-publisher:
-    docker:
-      - image: circleci/buildpack-deps:stretch
-
 jobs:
   install:
-    executor: code-evaluator
+    docker:
+      - image: circleci/python:3.8
     steps:
       - checkout
       - run:
@@ -26,7 +17,8 @@ jobs:
             - venv 
 
   lint:
-    executor: code-evaluator
+    docker:
+      - image: circleci/python:3.8
     steps:
       - checkout
       - attach_workspace:
@@ -38,7 +30,8 @@ jobs:
             make lint
 
   test:
-    executor: code-evaluator
+    docker:
+      - image: circleci/python:3.8
     steps:
       - checkout
       - attach_workspace:
@@ -50,7 +43,8 @@ jobs:
             make test
 
   build_dev_latest:
-    executor: docker-publisher
+    docker:
+      - image: circleci/buildpack-deps:stretch
     steps:
       - checkout
       - setup_remote_docker
@@ -66,7 +60,8 @@ jobs:
             - ./image.tar
 
     publish_dev_latest:
-      executor: docker-publisher
+      docker:
+        - image: circleci/buildpack-deps:stretch
       steps:
         - attach_workspace:
             at: /tmp/workspace
