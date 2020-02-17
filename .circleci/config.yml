@@ -1,4 +1,4 @@
-version: 2.1
+version: 3
 jobs:
   install:
     docker:
@@ -121,7 +121,7 @@ workflows:
       - test:
           requires:
             - install
-      - build_dev_latest
+      - build_dev_latest:
           filters:
             branches:
               only: dev
@@ -133,7 +133,7 @@ workflows:
           filters:
             branches:
               only: dev
-      - build_latest
+      - build_latest:
           filters:
             branches:
               only: master
