@@ -15,6 +15,7 @@ class OrderViewset(viewsets.ViewSet):
         order = serializer.save()
         intent = build_payment_intent(order.id)
         serializer.initial_data['payment'] = intent.client_secret
+        serializer.initial_data['id'] = order.id
         return Response(serializer.initial_data)
 
 
