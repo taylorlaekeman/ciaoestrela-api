@@ -1,4 +1,4 @@
-version: 3
+version: 2.1
 jobs:
   install:
     docker:
@@ -124,8 +124,7 @@ workflows:
       - build_dev_latest
           filters:
             branches:
-              only:
-                - dev
+              only: dev
       - publish_dev_latest:
           requires:
             - lint
@@ -133,13 +132,11 @@ workflows:
             - build_dev_latest
           filters:
             branches:
-              only:
-                - dev
+              only: dev
       - build_latest
           filters:
             branches:
-              only:
-                - master
+              only: master
       - publish_latest:
           requires:
             - lint
@@ -147,5 +144,4 @@ workflows:
             - build_latest
           filters:
             branches:
-              only:
-                - master
+              only: master
