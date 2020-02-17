@@ -59,18 +59,18 @@ jobs:
           paths:
             - ./image.tar
 
-    publish_dev_latest:
-      docker:
-        - image: circleci/buildpack-deps:stretch
-      steps:
-        - attach_workspace:
-            at: /tmp/workspace
-        - run:
-            name: load image
-            command: docker load -i /tmp/workspace/image.tar
-        - run:
-            name: publish image
-            command: docker push tjlaekem/ciaoestrela-api:dev-latest
+  publish_dev_latest:
+    docker:
+      - image: circleci/buildpack-deps:stretch
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - run:
+          name: load image
+          command: docker load -i /tmp/workspace/image.tar
+      - run:
+          name: publish image
+          command: docker push tjlaekem/ciaoestrela-api:dev-latest
 
 workflows:
   version: 2
