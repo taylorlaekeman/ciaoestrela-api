@@ -89,6 +89,7 @@ workflows:
             - install
       - build_dev_latest
       - publish_dev_latest:
+          context: dockerhub
           requires:
             - lint
             - test
