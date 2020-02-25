@@ -5,7 +5,7 @@ install:
 run:
 	python manage.py makemigrations orders
 	python manage.py migrate
-	python manage.py runserver 0.0.0.0:8000
+	gunicorn --bind 0.0.0.0:8080 ciaoestrela_api.wsgi
 
 test:
 	python -m pytest tests/
