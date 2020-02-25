@@ -20,22 +20,27 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY')
+DEBUG = os.environ.get('DEBUG', False)
 EMAIL_HOST=os.environ.get('EMAIL_HOST')
 EMAIL_HOST_PASSWORD=os.environ.get('EMAIL_HOST_PASSWORD')
 EMAIL_HOST_USER=os.environ.get('EMAIL_HOST_USER')
 EMAIL_PORT=os.environ.get('EMAIL_PORT')
 EMAIL_USER=os.environ.get('EMAIL_USER', EMAIL_HOST_USER)
+SECRET_KEY=os.environ.get('SECRET_KEY')
 STRIPE_SECRET_KEY=os.environ.get('STRIPE_SECRET_KEY')
 
 EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS=True
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
 ALLOWED_HOSTS = ['localhost', 'api.ciaoestrela.co']
 
+SECURE_SSL_REDIRECT=not DEBUG
+SESSION_COOKIE_SECURE=not DEBUG
+CSRF_COOKIE_SECURE=not DEBUG
+SECURE_HSTS_SECONDS=10 if not DEBUG else 0
+SECURE_HSTS_INCLUDE_SUBDOMAINS=not DEBUG
+SECURE_HSTS_PRELOAD=not DEBUG
+SECURE_REFERRER_POLICY="no-referrer"
 
 # Application definition
 
