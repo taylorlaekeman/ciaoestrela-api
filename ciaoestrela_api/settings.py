@@ -32,9 +32,8 @@ STRIPE_SECRET_KEY=os.environ.get('STRIPE_SECRET_KEY')
 EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS=True
 
-ALLOWED_HOSTS = ['localhost', 'api.ciaoestrela.co']
+ALLOWED_HOSTS = ['api']
 
-SECURE_SSL_REDIRECT=not DEBUG
 SESSION_COOKIE_SECURE=not DEBUG
 CSRF_COOKIE_SECURE=not DEBUG
 SECURE_HSTS_SECONDS=10 if not DEBUG else 0
