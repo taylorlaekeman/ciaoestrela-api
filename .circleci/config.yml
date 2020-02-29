@@ -1,0 +1,147 @@
+version: 3
+jobs:
+  install:
+    docker:
+      - image: circleci/python:3.8
+    steps:
+      - checkout
+      - run:
+          name: venv and install
+          command: |
+            python3.8 -m venv venv
+            . venv/bin/activate
+            make install
+      - persist_to_workspace:
+          root: /home/circleci/project/
+          paths:
+            - venv 
+
+  lint:
+    docker:
+      - image: circleci/python:3.8
+    steps:
+      - checkout
+      - attach_workspace:
+          at: /home/circleci/project
+      - run:
+          name: venv and lint
+          command: |
+            . venv/bin/activate
+            make lint
+
+  test:
+    docker:
+      - image: circleci/python:3.8
+    steps:
+      - checkout
+      - attach_workspace:
+          at: /home/circleci/project
+      - run:
+          name: venv and test
+          command: |
+            . venv/bin/activate
+            make test
+
+  build_dev_latest:
+    docker:
+      - image: circleci/buildpack-deps:stretch
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: build and tag
+          command: docker build . -t tjlaekem/ciaoestrela-api:dev-latest
+      - run:
+          name: save image
+          command: docker save -o image.tar tjlaekem/ciaoestrela-api:dev-latest
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ./image.tar
+
+  publish_dev_latest:
+    docker:
+      - image: circleci/buildpack-deps:stretch
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - setup_remote_docker
+      - run:
+          name: load image
+          command: docker load -i /tmp/workspace/image.tar
+      - run:
+          name: login to docker hub
+          command: echo $DOCKERHUB_PASSWORD | docker login -u tjlaekem --password-stdin
+      - run:
+          name: publish image
+          command: docker push tjlaekem/ciaoestrela-api:dev-latest
+
+  build_latest:
+    docker:
+      - image: circleci/buildpack-deps:stretch
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: build and tag
+          command: docker build . -t tjlaekem/ciaoestrela-api:latest
+      - run:
+          name: save image
+          command: docker save -o image.tar tjlaekem/ciaoestrela-api:latest
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ./image.tar
+
+  publish_latest:
+    docker:
+      - image: circleci/buildpack-deps:stretch
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - setup_remote_docker
+      - run:
+          name: load image
+          command: docker load -i /tmp/workspace/image.tar
+      - run:
+          name: login to docker hub
+          command: echo $DOCKERHUB_PASSWORD | docker login -u tjlaekem --password-stdin
+      - run:
+          name: publish image
+          command: docker push tjlaekem/ciaoestrela-api:latest
+
+workflows:
+  version: 2
+  test_build_deploy:
+    jobs:
+      - install
+      - lint:
+          requires:
+            - install
+      - test:
+          requires:
+            - install
+      - build_dev_latest:
+          filters:
+            branches:
+              only: dev
+      - publish_dev_latest:
+          requires:
+            - lint
+            - test
+            - build_dev_latest
+          filters:
+            branches:
+              only: dev
+      - build_latest:
+          filters:
+            branches:
+              only: master
+      - publish_latest:
+          requires:
+            - lint
+            - test
+            - build_latest
+          filters:
+            branches:
+              only: master
