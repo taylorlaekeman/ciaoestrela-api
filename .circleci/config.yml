@@ -86,7 +86,7 @@ jobs:
     steps:
       - add_ssh_keys:
           fingerprints:
-            - "ba:a0:48:3e:80:fe:86:51:9f:06:dd:87:56:2a:0f:18"
+            - "fa:f5:5c:8b:4b:d0:a0:4f:d9:98:41:25:a1:8c:80:04"
       - run:
           name: deploy to vm
           command: ssh -o "StrictHostKeyChecking no" tjlaekem@35.208.62.116 "docker-compose pull && docker-compose stop && docker-compose up -d"
