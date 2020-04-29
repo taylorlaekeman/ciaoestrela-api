@@ -104,10 +104,16 @@ workflows:
             - install
       - build_image
       - publish_image:
+          filters:
+            branches:
+              only: master
           requires:
             - lint
             - test
             - build_image
       - deploy_image:
+          filters:
+            branches:
+              only: master
           requires:
             - publish_image
