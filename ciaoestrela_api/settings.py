@@ -34,6 +34,10 @@ EMAIL_USE_TLS=True
 
 ALLOWED_HOSTS = ['api']
 
+if DEBUG:
+    ALLOWED_HOSTS += ['localhost']
+    EMAIL_BACKEND='django.core.mail.backends.dummy.EmailBackend'
+
 SESSION_COOKIE_SECURE=not DEBUG
 CSRF_COOKIE_SECURE=not DEBUG
 SECURE_HSTS_SECONDS=10 if not DEBUG else 0
