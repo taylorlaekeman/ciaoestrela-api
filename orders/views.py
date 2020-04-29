@@ -14,7 +14,7 @@ class OrderViewset(viewsets.ViewSet):
     def create(self, request):
         serializer = OrderSerializer(data=request.data)
         if not serializer.is_valid():
-            logger.warning('order is invalid %s', serializer.data)
+            logger.error('order is invalid %s %s', serializer.data, serializer.errors)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         order = serializer.save()
         intent = build_payment_intent(order.id)
