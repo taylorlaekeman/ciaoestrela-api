@@ -1,8 +1,17 @@
-version: 3
-jobs:
-  install:
+version: 2.1
+
+executors:
+  python:
     docker:
       - image: circleci/python:3.8
+
+  publisher:
+    docker:
+      - image: circleci/buildpack-deps:stretch
+
+jobs:
+  install:
+    executor: python
     steps:
       - checkout
       - run:
@@ -17,8 +26,7 @@ jobs:
             - venv 
 
   lint:
-    docker:
-      - image: circleci/python:3.8
+    executor: python
     steps:
       - checkout
       - attach_workspace:
@@ -30,8 +38,7 @@ jobs:
             make lint
 
   test:
-    docker:
-      - image: circleci/python:3.8
+    executor: python
     steps:
       - checkout
       - attach_workspace:
@@ -42,43 +49,8 @@ jobs:
             . venv/bin/activate
             make test
 
-  build_dev_latest:
-    docker:
-      - image: circleci/buildpack-deps:stretch
-    steps:
-      - checkout
-      - setup_remote_docker
-      - run:
-          name: build and tag
-          command: docker build . -t tjlaekem/ciaoestrela-api:dev-latest
-      - run:
-          name: save image
-          command: docker save -o image.tar tjlaekem/ciaoestrela-api:dev-latest
-      - persist_to_workspace:
-          root: .
-          paths:
-            - ./image.tar
-
-  publish_dev_latest:
-    docker:
-      - image: circleci/buildpack-deps:stretch
-    steps:
-      - attach_workspace:
-          at: /tmp/workspace
-      - setup_remote_docker
-      - run:
-          name: load image
-          command: docker load -i /tmp/workspace/image.tar
-      - run:
-          name: login to docker hub
-          command: echo $DOCKERHUB_PASSWORD | docker login -u tjlaekem --password-stdin
-      - run:
-          name: publish image
-          command: docker push tjlaekem/ciaoestrela-api:dev-latest
-
-  build_latest:
-    docker:
-      - image: circleci/buildpack-deps:stretch
+  build_image:
+    executor: publisher
     steps:
       - checkout
       - setup_remote_docker
@@ -93,9 +65,8 @@ jobs:
           paths:
             - ./image.tar
 
-  publish_latest:
-    docker:
-      - image: circleci/buildpack-deps:stretch
+  publish_image:
+    executor: publisher
     steps:
       - attach_workspace:
           at: /tmp/workspace
@@ -110,6 +81,16 @@ jobs:
           name: publish image
           command: docker push tjlaekem/ciaoestrela-api:latest
 
+  deploy_image:
+    executor: publisher
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "ba:a0:48:3e:80:fe:86:51:9f:06:dd:87:56:2a:0f:18"
+      - run:
+          name: deploy to vm
+          command: ssh -o "StrictHostKeyChecking no" tjlaekem@35.208.62.116 "docker-compose pull && docker-compose stop && docker-compose up -d"
+
 workflows:
   version: 2
   test_build_deploy:
@@ -121,27 +102,12 @@ workflows:
       - test:
           requires:
             - install
-      - build_dev_latest:
-          filters:
-            branches:
-              only: dev
-      - publish_dev_latest:
+      - build_image
+      - publish_image:
           requires:
             - lint
             - test
-            - build_dev_latest
-          filters:
-            branches:
-              only: dev
-      - build_latest:
-          filters:
-            branches:
-              only: master
-      - publish_latest:
+            - build_image
+      - deploy_image:
           requires:
-            - lint
-            - test
-            - build_latest
-          filters:
-            branches:
-              only: master
+            - publish_image
