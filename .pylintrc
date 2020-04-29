@@ -14,3 +14,4 @@ disable=
 	W0221,
 	W0223,
 max-line-length=120
+good-names=logger

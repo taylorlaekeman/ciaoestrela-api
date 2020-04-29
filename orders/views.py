@@ -1,3 +1,4 @@
+import logging
 from rest_framework import status, viewsets
 from rest_framework.response import Response
 
@@ -6,11 +7,14 @@ from .serializers import OrderSerializer, OrderTypeSerializer, PaperTypeSerializ
 from .utils.email import send_confirmation_email
 from .utils.stripe import build_payment_intent
 
+logger = logging.getLogger(__name__)
+
 
 class OrderViewset(viewsets.ViewSet):
     def create(self, request):
         serializer = OrderSerializer(data=request.data)
         if not serializer.is_valid():
+            logger.warning('order is invalid %s', serializer.data)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         order = serializer.save()
         intent = build_payment_intent(order.id)
