@@ -20,12 +20,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-DEBUG = os.environ.get('DEBUG', False)
+DEBUG = bool(os.environ.get('DEBUG', False))
 EMAIL_HOST=os.environ.get('EMAIL_HOST')
 EMAIL_HOST_PASSWORD=os.environ.get('EMAIL_HOST_PASSWORD')
 EMAIL_HOST_USER=os.environ.get('EMAIL_HOST_USER')
 EMAIL_PORT=os.environ.get('EMAIL_PORT')
 EMAIL_USER=os.environ.get('EMAIL_USER', EMAIL_HOST_USER)
+OKTA_CLIENT_ID=os.environ.get('OKTA_CLIENT_ID')
+OKTA_CLIENT_SECRET=os.environ.get('OKTA_CLIENT_SECRET')
 SECRET_KEY=os.environ.get('SECRET_KEY')
 STRIPE_SECRET_KEY=os.environ.get('STRIPE_SECRET_KEY')
 
@@ -33,6 +35,8 @@ EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS=True
 
 ALLOWED_HOSTS = ['api']
+if DEBUG:
+    ALLOWED_HOSTS.append('localhost')
 
 if DEBUG:
     ALLOWED_HOSTS += ['localhost']
@@ -145,6 +149,9 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'ciaoestrela_api.auth.OktaAuthentication',
+    ],
     'DEFAULT_RENDERER_CLASSES': (
         'djangorestframework_camel_case.render.CamelCaseJSONRenderer',
         'djangorestframework_camel_case.render.CamelCaseBrowsableAPIRenderer',
