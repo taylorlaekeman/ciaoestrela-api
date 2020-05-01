@@ -1,8 +1,9 @@
 import logging
 from rest_framework import status, viewsets
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from .models import OrderType, PaperType, Payment
+from .models import CustomCard, Order, OrderItem, OrderType, PaperType, Payment
 from .serializers import OrderSerializer, OrderTypeSerializer, PaperTypeSerializer, PaymentSerializer
 from .utils.email import send_confirmation_email
 from .utils.stripe import build_payment_intent
@@ -11,6 +12,12 @@ logger = logging.getLogger(__name__)
 
 
 class OrderViewset(viewsets.ViewSet):
+    def get_permissions(self):
+        if self.action == 'list':
+            return [IsAuthenticated()]
+        else:
+            return []
+
     def create(self, request):
         serializer = OrderSerializer(data=request.data)
         if not serializer.is_valid():
@@ -21,6 +28,38 @@ class OrderViewset(viewsets.ViewSet):
         serializer.initial_data['payment'] = intent.client_secret
         serializer.initial_data['id'] = order.id
         return Response(serializer.initial_data)
+
+    def list(self, request):
+        response = []
+        orders = Order.objects.all()
+        order_indices_by_id = {}
+        for index, order in enumerate(orders):
+            order_indices_by_id[order.id] = index
+            response.append({
+                'contact': order.contact,
+                'destination': order.destination,
+                'id': order.id,
+                'items': []
+            })
+        order_items = OrderItem.objects.all()
+        item_indices_by_id = {}
+        for item in order_items:
+            order_index = order_indices_by_id[item.order.id]
+            order = response[order_index]
+            item_indices_by_id[item.id] = len(order['items'])
+            order['items'].append({
+                'type': item.order_type.name
+            })
+        custom_cards = CustomCard.objects.all()
+        for card in custom_cards:
+            order_id = card.order_item.order.id
+            item_id = card.order_item.id
+            order_index = order_indices_by_id[order_id]
+            item_index = item_indices_by_id[item_id]
+            item = response[order_index]['items'][item_index]
+            item['ideas'] = card.ideas
+            item['paper'] = card.paper.name
+        return Response(response)
 
 
 class OrderTypeViewset(viewsets.ModelViewSet):
