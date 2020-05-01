@@ -15,8 +15,7 @@ class OrderViewset(viewsets.ViewSet):
     def get_permissions(self):
         if self.action == 'list':
             return [IsAuthenticated()]
-        else:
-            return []
+        return []
 
     def create(self, request):
         serializer = OrderSerializer(data=request.data)
@@ -29,7 +28,7 @@ class OrderViewset(viewsets.ViewSet):
         serializer.initial_data['id'] = order.id
         return Response(serializer.initial_data)
 
-    def list(self, request):
+    def list(self, _):
         response = []
         orders = Order.objects.all()
         order_indices_by_id = {}
