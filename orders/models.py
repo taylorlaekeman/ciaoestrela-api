@@ -7,8 +7,10 @@ class OrderType(models.Model):
 
 
 class Order(models.Model):
-    destination = models.TextField()
     contact = models.EmailField()
+    created_date = models.DateTimeField(auto_now_add=True)
+    destination = models.TextField()
+    modified_date = models.DateTimeField(auto_now=True)
 
 
 class OrderItem(models.Model):
