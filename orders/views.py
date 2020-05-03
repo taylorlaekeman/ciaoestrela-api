@@ -1,4 +1,5 @@
 import logging
+from operator import itemgetter
 from rest_framework import status, viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -36,9 +37,11 @@ class OrderViewset(viewsets.ViewSet):
             order_indices_by_id[order.id] = index
             response.append({
                 'contact': order.contact,
+                'createdDate': order.created_date,
                 'destination': order.destination,
                 'id': order.id,
-                'items': []
+                'items': [],
+                'modifiedDate': order.modified_date
             })
         order_items = OrderItem.objects.all()
         item_indices_by_id = {}
@@ -58,6 +61,7 @@ class OrderViewset(viewsets.ViewSet):
             item = response[order_index]['items'][item_index]
             item['ideas'] = card.ideas
             item['paper'] = card.paper.name
+        response = sorted(response, key=itemgetter('modifiedDate'), reverse=True)
         return Response(response)
 
 
