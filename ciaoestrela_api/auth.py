@@ -1,3 +1,4 @@
+import logging
 from rest_framework.authentication import BaseAuthentication
 from rest_framework.exceptions import AuthenticationFailed
 import requests
@@ -5,6 +6,7 @@ import requests
 from ciaoestrela_api.settings import OKTA_CLIENT_ID, OKTA_CLIENT_SECRET
 
 AUTH = (OKTA_CLIENT_ID, OKTA_CLIENT_SECRET)
+logger = logging.getLogger(__name__)
 
 
 class AuthenticatedUser():
@@ -14,13 +16,16 @@ class AuthenticatedUser():
 
 class OktaAuthentication(BaseAuthentication):
     def authenticate(self, request):
+        logger.warning('authenticating')
         try:
             token = request.META.get('HTTP_AUTHORIZATION').split(' ')[-1]
             data = {'token': token}
             response = requests.post('https://dev-777810.okta.com/oauth2/default/v1/introspect', auth=AUTH, data=data)
             response_json = response.json()
+            logger.warning(response_json)
             if not response_json['active']:
                 raise Exception()
             return (AuthenticatedUser(), None)
-        except Exception:
+        except Exception as error:
+            logger.error(error)
             return None
