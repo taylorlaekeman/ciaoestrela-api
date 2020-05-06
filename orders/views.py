@@ -4,7 +4,7 @@ from rest_framework import status, viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from .models import CustomCard, Order, OrderItem, OrderType, PaperType, Payment
+from .models import CustomCard, OrderItem, OrderType, PaperType, Payment
 from .serializers import OrderSerializer, OrderTypeSerializer, PaperTypeSerializer, PaymentSerializer
 from .utils.email import send_confirmation_email
 from .utils.stripe import build_payment_intent
@@ -31,9 +31,10 @@ class OrderViewset(viewsets.ViewSet):
 
     def list(self, _):
         response = []
-        orders = Order.objects.all()
+        payments = Payment.objects.all()
         order_indices_by_id = {}
-        for index, order in enumerate(orders):
+        for index, payment in enumerate(payments):
+            order = payment.order
             order_indices_by_id[order.id] = index
             response.append({
                 'contact': order.contact,
@@ -46,21 +47,23 @@ class OrderViewset(viewsets.ViewSet):
         order_items = OrderItem.objects.all()
         item_indices_by_id = {}
         for item in order_items:
-            order_index = order_indices_by_id[item.order.id]
-            order = response[order_index]
-            item_indices_by_id[item.id] = len(order['items'])
-            order['items'].append({
-                'type': item.order_type.name
-            })
+            order_index = order_indices_by_id.get(item.order.id, None)
+            if order_index:
+                order = response[order_index]
+                item_indices_by_id[item.id] = len(order['items'])
+                order['items'].append({
+                    'type': item.order_type.name
+                })
         custom_cards = CustomCard.objects.all()
         for card in custom_cards:
             order_id = card.order_item.order.id
             item_id = card.order_item.id
-            order_index = order_indices_by_id[order_id]
-            item_index = item_indices_by_id[item_id]
-            item = response[order_index]['items'][item_index]
-            item['ideas'] = card.ideas
-            item['paper'] = card.paper.name
+            order_index = order_indices_by_id.get(order_id, None)
+            item_index = item_indices_by_id.get(item_id, None)
+            if order_index and item_index:
+                item = response[order_index]['items'][item_index]
+                item['ideas'] = card.ideas
+                item['paper'] = card.paper.name
         response = sorted(response, key=itemgetter('modifiedDate'), reverse=True)
         return Response(response)
 
