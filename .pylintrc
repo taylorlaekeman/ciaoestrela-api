@@ -11,6 +11,7 @@ disable=
 	R0201,
 	R0901,
 	R0903,
+	R0914,
 	W0221,
 	W0223,
 max-line-length=120

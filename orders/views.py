@@ -4,7 +4,7 @@ from rest_framework import status, viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from .models import CustomCard, Order, OrderItem, OrderType, PaperType, Payment
+from .models import CustomCard, OrderItem, OrderType, PaperType, Payment
 from .serializers import OrderSerializer, OrderTypeSerializer, PaperTypeSerializer, PaymentSerializer
 from .utils.email import send_confirmation_email
 from .utils.stripe import build_payment_intent
