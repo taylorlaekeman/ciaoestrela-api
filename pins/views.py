@@ -1,4 +1,3 @@
-import logging
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -6,9 +5,6 @@ from rest_framework.viewsets import ModelViewSet
 from .image_client import ImageClient
 from .models import Image, Pin
 from .serializers import ImageSerializer, PinSerializer
-
-
-logger = logging.getLogger(__name__)
 
 
 class PinViewset(ModelViewSet):
@@ -25,9 +21,6 @@ class PinViewset(ModelViewSet):
         if self.request.user.is_authenticated:
             return Pin.objects.all()
         return Pin.objects.filter(is_available=True)
-
-    def list(self, request):
-        return super().list(self, request)
 
 
 class ImageViewset(ModelViewSet):
