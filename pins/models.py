@@ -9,6 +9,6 @@ class Image(Model):
 
 class Pin(Model):
     cost = models.DecimalField(max_digits=6, decimal_places=2)
-    pin_image = models.ForeignKey(Image, on_delete=models.PROTECT, default=None)
     is_available = models.BooleanField(default=False)
     name = models.CharField(max_length=100)
+    pin_image = models.ForeignKey(Image, on_delete=models.PROTECT, default=None)
