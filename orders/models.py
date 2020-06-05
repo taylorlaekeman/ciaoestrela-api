@@ -1,9 +1,10 @@
+import logging
 from django.db import models
+from utils.models import Model
 
+from pins.models import Pin
 
-class OrderType(models.Model):
-    name = models.CharField(max_length=100)
-    cost = models.DecimalField(max_digits=6, decimal_places=2, default=10)
+logger = logging.getLogger(__name__)
 
 
 class Order(models.Model):
@@ -11,21 +12,16 @@ class Order(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
     destination = models.TextField()
     modified_date = models.DateTimeField(auto_now=True)
+    pins = models.ManyToManyField(Pin, blank=True, default=None)
 
-
-class OrderItem(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    order_type = models.ForeignKey(OrderType, on_delete=models.PROTECT)
-
-
-class PaperType(models.Model):
-    name = models.CharField(max_length=100)
-
-
-class CustomCard(models.Model):
-    order_item = models.OneToOneField(OrderItem, on_delete=models.CASCADE)
-    ideas = models.TextField(blank=True)
-    paper = models.ForeignKey(PaperType, on_delete=models.PROTECT, default=1)
+    @property
+    def cost(self):
+        cost = 0
+        for pin in self.pins.all():
+            cost += pin.cost
+        for card in self.custom_cards.all():
+            cost += card.cost
+        return cost
 
 
 class Payment(models.Model):
