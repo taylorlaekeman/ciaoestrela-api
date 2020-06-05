@@ -1,7 +1,5 @@
-from operator import itemgetter
-from rest_framework import status, viewsets
+from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 
 from .email_client import send_confirmation_email
 from .models import Order, Payment
@@ -9,13 +7,12 @@ from .payment_client import build_token
 from .serializers import OrderSerializer, PaymentSerializer
 
 
-class OrderViewset(viewsets.ModelViewSet):
+class OrderViewSet(ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
     http_method_names = ['get', 'post']
 
     def get_permissions(self):
-        return []
         if self.action == 'list':
             return [IsAuthenticated()]
         return []
@@ -27,7 +24,7 @@ class OrderViewset(viewsets.ModelViewSet):
         return response
 
 
-class PaymentViewset(viewsets.ModelViewSet):
+class PaymentViewSet(ModelViewSet):
     queryset = Payment.objects.all()
     serializer_class = PaymentSerializer
     http_method_names = ['post']

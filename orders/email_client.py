@@ -1,12 +1,22 @@
 from django.conf import settings
 from django.core.mail import get_connection, EmailMultiAlternatives
-from django.shortcuts import render
 from django.template import loader
 
 from .models import Order
 
 
-EMAIL_TEXT = 'Hi!\n\nI\'m Alicia, the owner, operator, and artist at Ciao, Estrela Co.  Thank you so much for your order!\n\nI\'ll get to work right away, and send you my rough work (for your approval) within two business days.  If you need to get in contact with me, please feel free to respond to this email!\n\nTalk to you soon!\n\nxx Alicia\nCiao, Estrela co.'
+EMAIL_TEXT = """
+Hi!
+
+I'm Alicia, the owner, operator, and artist at Ciao, Estrela Co.  Thank you so much for your order!
+
+I'll get to work right away, and send you my rough work (for your approval) within two business days.  If you need to get in contact with me, please feel free to respond to this email!
+
+Talk to you soon!
+
+xx Alicia
+Ciao, Estrela co.
+"""
 
 
 def send_confirmation_email(order_id):
