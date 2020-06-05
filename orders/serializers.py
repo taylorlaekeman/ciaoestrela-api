@@ -1,10 +1,7 @@
-import logging
 from rest_framework import serializers
 
 from custom_cards.models import CustomCard
 from .models import Order, Payment
-
-logger = logging.getLogger(__name__)
 
 
 class OrderSerializer(serializers.ModelSerializer):

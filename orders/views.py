@@ -1,4 +1,3 @@
-import logging
 from operator import itemgetter
 from rest_framework import status, viewsets
 from rest_framework.permissions import IsAuthenticated
@@ -8,8 +7,6 @@ from .email_client import send_confirmation_email
 from .models import Order, Payment
 from .payment_client import build_token
 from .serializers import OrderSerializer, PaymentSerializer
-
-logger = logging.getLogger(__name__)
 
 
 class OrderViewset(viewsets.ModelViewSet):

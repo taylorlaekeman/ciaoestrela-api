@@ -1,10 +1,7 @@
-import logging
 from django.db import models
 from utils.models import Model
 
 from pins.models import Pin
-
-logger = logging.getLogger(__name__)
 
 
 class Order(models.Model):
