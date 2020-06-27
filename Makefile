@@ -3,7 +3,7 @@ install:
 	pip install -r requirements.txt
 
 run:
-	python manage.py makemigrations custom_cards orders pins
+	python manage.py makemigrations cards custom_cards orders pins utils
 	python manage.py migrate
 	gunicorn --bind 0.0.0.0:8080 ciaoestrela_api.wsgi
 
@@ -11,4 +11,4 @@ test:
 	python -m pytest tests/
 
 lint:
-	python -m pylint custom_cards orders pins
+	python -m pylint cards custom_cards orders pins utils

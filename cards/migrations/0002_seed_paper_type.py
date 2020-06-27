@@ -8,12 +8,13 @@ PAPER_TYPES = [
     { 'id': 4, 'name': '5" x 6.5" white' },
 ]
 
+
 def seed_paper_type(apps, schema_editor):
-    PaperType = apps.get_model('custom_cards', 'PaperType')
+    PaperType = apps.get_model('cards', 'PaperType')
     for paper_type in PAPER_TYPES:
         PaperType.objects.create(**paper_type)
 
 
 class Migration(migrations.Migration):
-    dependencies = [('custom_cards', '0003_auto_20200602_2318')]
+    dependencies = [('cards', '0001_initial')]
     operations = [migrations.RunPython(seed_paper_type)]

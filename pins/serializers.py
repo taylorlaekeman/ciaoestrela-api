@@ -4,7 +4,7 @@ from .models import Image, Pin
 
 
 class PinSerializer(ModelSerializer):
-    image_url = URLField(source='pin_image.url')
+    image_url = URLField(source='image.url')
 
     class Meta:
         model = Pin
@@ -17,19 +17,19 @@ class PinSerializer(ModelSerializer):
         ]
 
     def create(self, validated_data):
-        image_url = validated_data.pop('pin_image')['url']
+        image_url = validated_data.pop('image')['url']
         image = Image.objects.get(url=image_url)
-        return Pin.objects.create(pin_image=image, **validated_data)
+        return Pin.objects.create(image=image, **validated_data)
 
     def update(self, pin, validated_data):
         pin.cost = validated_data.get('cost', pin.cost)
         pin.is_available = validated_data.get('is_available', pin.is_available)
         pin.name = validated_data.get('name', pin.name)
-        pin_image = validated_data.get('pin_image', None)
-        if pin_image:
-            image_url = pin_image['url']
+        image = validated_data.get('image', None)
+        if image:
+            image_url = image['url']
             image = Image.objects.get(url=image_url)
-            pin.pin_image = image
+            pin.image = image
         pin.save()
         return pin
 
