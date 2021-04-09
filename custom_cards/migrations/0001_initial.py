@@ -9,32 +9,27 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
+        ('orders', '0001_initial'),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Image',
+            name='PaperType',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_date', models.DateTimeField(auto_now_add=True)),
-                ('modified_date', models.DateTimeField(auto_now=True)),
-                ('url', models.URLField(blank=True)),
+                ('name', models.CharField(max_length=100)),
             ],
-            options={
-                'ordering': ['-created_date'],
-                'abstract': False,
-            },
         ),
         migrations.CreateModel(
-            name='Pin',
+            name='CustomCard',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('created_date', models.DateTimeField(auto_now_add=True)),
                 ('modified_date', models.DateTimeField(auto_now=True)),
-                ('cost', models.DecimalField(decimal_places=2, max_digits=6)),
-                ('is_available', models.BooleanField(default=False)),
-                ('name', models.CharField(max_length=100)),
-                ('pin_image', models.ForeignKey(default=None, on_delete=django.db.models.deletion.PROTECT, to='pins.Image')),
+                ('cost', models.DecimalField(decimal_places=2, default=10, max_digits=6)),
+                ('ideas', models.TextField(blank=True)),
+                ('order', models.ForeignKey(blank=True, default=None, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='custom_cards', to='orders.Order')),
+                ('paper', models.ForeignKey(default=1, on_delete=django.db.models.deletion.PROTECT, to='custom_cards.PaperType')),
             ],
             options={
                 'ordering': ['-created_date'],

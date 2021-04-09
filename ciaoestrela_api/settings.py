@@ -61,6 +61,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'cards',
+    'custom_cards',
     'orders',
     'pins',
     'utils',

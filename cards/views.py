@@ -3,14 +3,14 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from utils.image_client import ImageClient
-from .models import Image, Pin
-from .serializers import ImageSerializer, PinSerializer
+from .models import Card, CardImage
+from .serializers import CardSerializer, ImageSerializer
 
 
-class PinViewset(ModelViewSet):
-    queryset = Pin.objects.all()
-    serializer_class = PinSerializer
+class CardViewSet(ModelViewSet):
     http_method_names = ['get', 'patch', 'post']
+    queryset = Card.objects.all()
+    serializer_class = CardSerializer
 
     def get_permissions(self):
         if self.action == 'create' or self.action == 'update':
@@ -19,13 +19,13 @@ class PinViewset(ModelViewSet):
 
     def get_queryset(self):
         if self.request.user.is_authenticated:
-            return Pin.objects.all()
-        return Pin.objects.filter(is_available=True)
+            return Card.objects.all()
+        return Card.objects.filter(is_available=True)
 
 
-class ImageViewset(ModelViewSet):
+class ImageViewSet(ModelViewSet):
     http_method_names = ['post']
-    queryset = Image.objects.all()
+    queryset = CardImage.objects.all()
     serializer_class = ImageSerializer
 
     def get_permissions(self):
@@ -33,9 +33,9 @@ class ImageViewset(ModelViewSet):
 
     def create(self, request):
         client = ImageClient()
-        image = Image()
+        image = CardImage()
         image.save()
-        url = client.upload('pins/{}.png'.format(image.id), request.data['file'])
+        url = client.upload('cards/{}.png'.format(image.id), request.data['file'])
         image.url = url
         image.save()
         return Response(ImageSerializer(image).data)

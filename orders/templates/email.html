@@ -49,22 +49,35 @@
                 </table>
               </td>
             </tr>
-            {% for item in items %}
+            {% for custom_card in custom_cards %}
             <tr>
               <td>
                 <table style="margin: 10px 0; padding: 0 10px; border-left: solid hsl(160, 10%, 60%) 2px;">
                   <tr>
                     <td style="font-family: Helvetica, Arial, sans-serif; font-size: 1.1em; color: hsl(160, 5%, 30%);">
-                      Custom card on {{ item.paper }} paper
+                      Custom card on {{ custom_card.paper.name }} paper
                     </td>
                   </tr>
-                  {% if item.ideas %}
+                  {% if custom_card.ideas %}
                   <tr>
                     <td style="font-family: Helvetica, Arial, sans-serif; font-size: 1.1em; color: hsl(160, 5%, 30%);">
-                      {{ item.ideas }}
+                      {{ custom_card.ideas }}
                     </td>
                   </tr>
                   {% endif %}
+                </table>
+              </td>
+            </tr>
+            {% endfor %}
+            {% for pin in pins %}
+            <tr>
+              <td>
+                <table style="margin: 10px 0; padding: 0 10px; border-left: solid hsl(160, 10%, 60%) 2px;">
+                  <tr>
+                    <td style="font-family: Helvetica, Arial, sans-serif; font-size: 1.1em; color: hsl(160, 5%, 30%);">
+                      {{ pin.name }} pin
+                    </td>
+                  </tr>
                 </table>
               </td>
             </tr>
